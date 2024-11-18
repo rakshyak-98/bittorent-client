@@ -1,0 +1,16 @@
+{
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "bencode": "^2.0.1",
+    "bignumber": "^1.1.0"
+  },
+  "name": "bittorrent-client",
+  "version": "1.0.0",
+  "description": "Bittorrent solve the issue of the bandwidth. when one host (peer) is broadcasting and rest are watching if they require any piece one can request for that piece. The big issue with the Bittorrent is latency.",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
