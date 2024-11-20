@@ -3,6 +3,15 @@
 const download = require("./src/download");
 const torrentParser = require("./src/torrent-parser");
 
-const torrent = torrentParser.open(process.argv[2]);
+class Download{
+  path
+  constructor(filePath){
+    this.path = filePath;
+  }
 
-download(torrent, torrent.info.name);
+  download(){
+    download(torrentParser.open(filepath))
+  }
+}
+
+module.exports =  new Download();
