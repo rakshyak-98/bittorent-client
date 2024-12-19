@@ -2,7 +2,7 @@
 
 const Buffer = require("node:buffer").Buffer;
 const torrentParser = require("../models/torrentParser.js");
-const util = require("../util.js");
+const util = require("../services/util.js");
 const { SIZE } = require("../constants/index.js")
 
 module.exports.buildHandshake = (torrent) => {

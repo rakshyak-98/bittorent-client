@@ -2,7 +2,7 @@
 
 const tp = require("./torrentParser");
 
-module.exports = class {
+module.exports = class Queue {
 	constructor(torrent) {
 		this._torrent = torrent;
 		this._queue = [];

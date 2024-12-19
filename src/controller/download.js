@@ -1,10 +1,10 @@
 const fs = require("fs");
 const net = require("node:net");
 const Buffer = require("node:buffer").Buffer;
-const tracker = require("../tracker");
-const Pieces = require("../pieces").default;
+const tracker = require("../services/tracker");
+const Pieces = require("../models/pieces").default;
 const message = require("../message");
-const Queue = require("../Queue");
+const Queue = require("../models/Queue");
 const eventEmitter = require("../handlers/eventEmitter")
 const handler = require("../handlers/message-handler")
 
@@ -17,8 +17,11 @@ module.exports = (torrent, path) => {
 };
 
 function download(peer, torrent, pieces, file) {
+	/* 
+		logic for downloading the file from the peer.
+	 */
 	const socket = new net.Socket();
-	socket.on("error", console.log);
+	socket.on("error", console.error);
 	socket.connect(peer.port, peer.id, () => {
 		socket.write(message.buildHandshake(torrent));
 	});
