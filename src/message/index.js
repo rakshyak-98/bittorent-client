@@ -1,22 +1,24 @@
 "use strict";
 
 const Buffer = require("node:buffer").Buffer;
-const torrentParser = require("./torrent-parser.js");
-const util = require("./util.js");
+const torrentParser = require("../models/torrentParser.js");
+const util = require("../util.js");
+const { SIZE } = require("../constants/index.js")
 
 module.exports.buildHandshake = (torrent) => {
-	const buf = Buffer.alloc(68);
+	const buf = Buffer.alloc(SIZE.HANDSHAKE);
 	// pstr len
-	buf.writeUInt8(19, 0);
+	buf.writeUInt8(SIZE.PROTOCOL_IDENTIFIER, 0);
 	// pstr
 	buf.write("BitTorrent protocol", 1);
 	// reserver
-	buf.writeUInt32BE(0, 20);
-	buf.writeUInt32BE(0, 24);
+	buf.writeUInt32BE(0, 20); // write 4 bytes of zero starting at byte 20
+	buf.writeUInt32BE(0, 24); // write 4 bytes of zero starting at byte 24
+
 	// info hash
-	torrentParser.infoHash(torrent).copy(buf, 28);
+	torrentParser.infoHash(torrent).copy(buf, 28); // copy the 20-byte info hash starting at byte 28
 	// peer id
-	buf.write(util.genId());
+	buf.write(util.genId(), 28); // write the 20-byte peer id starting at byte 48
 	return buf;
 };
 

@@ -1,6 +1,6 @@
 "use strict";
 
-const tp = require("./torrent-parser");
+const tp = require("./torrentParser");
 
 module.exports = class {
 	constructor(torrent) {
@@ -33,4 +33,3 @@ module.exports = class {
 		return this._queue.length;
 	}
 };
-

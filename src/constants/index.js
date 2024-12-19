@@ -1,0 +1,15 @@
+module.exports.SIZE = {
+    HANDSHAKE: 68,
+    KEEP_ALIVE: 4,
+    CHOKE: 5,
+    UNCHOKE: 5,
+    INTERESTED: 5,
+    UNINTERESTED: 5,
+    HAVE: 9,
+    BITFIELD: 14,
+    REQUEST: 17,
+    PIECE: 13,
+    CANCEL: 17,
+    PROTOCOL_IDENTIFIER: 19,
+    INFO_HASH: 20,
+}

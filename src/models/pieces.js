@@ -1,4 +1,4 @@
-const tp = require("./torrent-parser");
+const tp = require("./torrentParser");
 
 module.exports.default = class {
 	constructor(torrent) {
@@ -46,4 +46,3 @@ module.exports.default = class {
 		process.stdout.write("progress:", +percent + "%\r");
 	}
 };
-

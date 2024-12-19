@@ -1,7 +1,7 @@
 "use strict";
 
-const download = require("./src/download");
-const torrentParser = require("./src/torrent-parser");
+const download = require("./src/controller/download");
+const torrentParser = require("./src/models/torrentParser");
 
 class Download{
   path

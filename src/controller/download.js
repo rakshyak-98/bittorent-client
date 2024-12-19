@@ -1,10 +1,12 @@
 const fs = require("fs");
 const net = require("node:net");
 const Buffer = require("node:buffer").Buffer;
-const tracker = require("./tracker");
-const Pieces = require("./pieces").default;
-const message = require("./message");
-const Queue = require("./Queue");
+const tracker = require("../tracker");
+const Pieces = require("../pieces").default;
+const message = require("../message");
+const Queue = require("../Queue");
+const eventEmitter = require("../handlers/eventEmitter")
+const handler = require("../handlers/message-handler")
 
 module.exports = (torrent, path) => {
 	tracker.getPeers(torrent, (peers) => {
@@ -37,20 +39,6 @@ function onWholeMsg(socket, callback) {
 			handshake = false;
 		}
 	});
-}
-
-function msgHandler(msg, socket, pieces, queue, file) {
-	if (isHandshake(msg)) {
-		socket.write(message.buildInterested());
-	} else {
-		const m = message.parse(msg);
-		if (m.id === 0) chokeHandler(socket, pieces, queue);
-		if (m.id === 1) unChokeHandler(socket);
-		if (m.id === 4) haveHandler(m.payload, socket, pieces, queue, m.payload);
-		if (m.id === 5) bitFieldHandler(socket, pieces, queue, m.payload);
-		if (m.id === 7)
-			pieceHandler(m.payload, socket, pieces, queue, torrent, file);
-	}
 }
 
 function isHandshake(msg) {
@@ -172,3 +160,38 @@ function requestPiece(socket, pieces, queue) {
 		}
 	}
 }
+
+function msgHandler(msg, socket, pieces, queue, file) {
+	if (isHandshake(msg)) {
+		socket.write(message.buildInterested());
+	} else {
+		const m = message.parse(msg);
+		switch(m.id){
+		case 0:
+			eventEmitter.emit('choke', socket, pieces, queue);
+			break;
+		case 1:
+			eventEmitter.emit('unchoke', socket);
+			break;
+		case 4:
+			eventEmitter.emit('have', m.payload, socket, pieces, queue);
+			break;
+		case 5:
+			eventEmitter.emit('bitfield', socket, pieces, queue, m.payload);	
+			break;
+		case 7:
+			eventEmitter.emit('piece', m.payload, socket, pieces, queue, torrent, file);	
+			break;
+		}
+	}
+}
+
+
+// Register event handlers
+eventEmitter.on('handshake', (socket, torrent) => new handler.HandShakeHandler().handle(socket, torrent));
+eventEmitter.on('interested', (socket) => new handlers.InterestedHandler().handle(socket));
+eventEmitter.on('choke', (socket, pieces, queue) => new handlers.ChokeHandler().handle(socket, pieces, queue));
+eventEmitter.on('unchoke', (socket) => new handlers.UnChokeHandler().handle(socket));
+eventEmitter.on('have', (payload, socket, pieces, queue) => new handlers.HaveHandler().handle(payload, socket, pieces, queue));
+eventEmitter.on('bitfield', (socket, pieces, queue, payload) => new handlers.BitFieldHandler().handle(socket, pieces, queue, payload));
+eventEmitter.on('piece', (payload, socket, pieces, queue, torrent, file) => new handlers.PieceHandler().handle(payload, socket, pieces, queue, torrent, file));

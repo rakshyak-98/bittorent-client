@@ -1,6 +1,6 @@
 const crypto = require("node:crypto");
 const dgram = require("node:dgram");
-const torrentParser = require("./torrent-parser.js");
+const torrentParser = require("./models/torrentParser.js");
 const util = require("./util.js");
 const Buffer = require("node:buffer").Buffer;
 
