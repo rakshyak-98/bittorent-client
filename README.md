@@ -1,3 +1,36 @@
+# BitTorrent Client (Go)
+
+A BitTorrent client written in Go that discovers peers via UDP trackers and downloads files over the peer wire protocol.
+
+## Requirements
+
+- Go 1.21 or later
+
+## Usage
+
+```bash
+go build -o bittorrent-client .
+./bittorrent-client path/to/file.torrent
+```
+
+The downloaded file is written to the name specified in the torrent metadata (`info.name`).
+
+## Project structure
+
+```
+main.go                          Entry point
+internal/
+  util/                          Peer ID generation
+  torrentparser/                 Torrent file parsing and piece math
+  tracker/                       UDP tracker connect/announce (BEP 15)
+  message/                       BitTorrent wire protocol messages
+  pieces/                        Request/receive block tracking
+  queue/                         Per-peer piece block queue
+  download/                      TCP peer connections and download orchestration
+```
+
+---
+
 Bittorrent solve the issue of the bandwidth. when one host (peer) is broadcasting and rest are watching if they require any piece one can request for that piece. The big issue with the Bittorrent is latency.
 
 >[!NOTE] an initial seeder is necessary to start the process of sharing a file using bittorrent protocol.
